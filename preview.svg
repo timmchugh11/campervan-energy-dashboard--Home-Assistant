@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <rect width="1440" height="900" fill="#111111"/>
+  <text x="720" y="48" fill="#f2f2f2" font-family="Inter,Segoe UI,sans-serif" font-size="24" font-weight="650" text-anchor="middle">Campervan Energy</text>
+  <line x1="24" y1="72" x2="1416" y2="72" stroke="#2a2a2a"/>
+  <g font-family="Inter,Segoe UI,sans-serif">
+    <g transform="translate(24 96)">
+      <rect width="330" height="168" rx="14" fill="#1b1b1b" stroke="#343434"/>
+      <rect width="330" height="3" fill="#f59e0b"/>
+      <text x="20" y="34" fill="#a7a7a7" font-size="13" font-weight="700">SOLAR</text>
+      <text x="20" y="96" fill="#f2f2f2" font-size="54" font-weight="620">501<tspan font-size="22" fill="#a7a7a7"> W</tspan></text>
+      <text x="20" y="138" fill="#777">86.4 V</text><text x="130" y="138" fill="#777">5.8 A</text><text x="230" y="138" fill="#777">8.19 kWh</text>
+    </g>
+    <g transform="translate(24 280)">
+      <rect width="330" height="168" rx="14" fill="#1b1b1b" stroke="#343434"/>
+      <rect width="330" height="3" fill="#4b9cd3"/>
+      <text x="20" y="34" fill="#a7a7a7" font-size="13" font-weight="700">ALTERNATOR</text>
+      <text x="20" y="96" fill="#f2f2f2" font-size="54" font-weight="620">318<tspan font-size="22" fill="#a7a7a7"> W</tspan></text>
+      <text x="20" y="138" fill="#777">14.2 V</text><text x="130" y="138" fill="#777">22.4 A</text><text x="230" y="138" fill="#777">2 chargers</text>
+    </g>
+    <g transform="translate(24 464)" opacity=".6">
+      <rect width="330" height="168" rx="14" fill="#1b1b1b" stroke="#343434"/>
+      <rect width="330" height="3" fill="#61b8c8"/>
+      <text x="20" y="34" fill="#a7a7a7" font-size="13" font-weight="700">HOOKUP</text>
+      <text x="20" y="96" fill="#f2f2f2" font-size="54" font-weight="620">0<tspan font-size="22" fill="#a7a7a7"> W</tspan></text>
+      <text x="20" y="138" fill="#777">Disconnected</text>
+    </g>
+    <g transform="translate(370 96)">
+      <rect width="700" height="536" rx="14" fill="#1b1b1b" stroke="#343434"/>
+      <ellipse cx="350" cy="284" rx="255" ry="94" fill="#202020"/>
+      <path d="M205 286h342l68 48H166l39-48Z" fill="#2a2a2a" stroke="#555"/>
+      <path d="M250 236h248l52 50H208l42-50Z" fill="#303030" stroke="#666"/>
+      <circle cx="255" cy="345" r="38" fill="#151515" stroke="#777"/><circle cx="525" cy="345" r="38" fill="#151515" stroke="#777"/>
+      <path d="M150 135c150 24 260 57 360 121" stroke="#f59e0b" stroke-width="3" opacity=".8"/>
+      <path d="M150 350c170-14 282-20 386-48" stroke="#4b9cd3" stroke-width="3" opacity=".8"/>
+      <path d="M556 334c86-18 135-47 176-91" stroke="#e85668" stroke-width="3" opacity=".8"/>
+      <text x="24" y="486" fill="#a7a7a7" font-size="13" font-weight="700">VAN USAGE</text>
+      <text x="545" y="502" fill="#f2f2f2" font-size="66" font-weight="650" text-anchor="end">330<tspan font-size="25" fill="#a7a7a7"> W</tspan></text>
+    </g>
+    <g transform="translate(1086 96)">
+      <rect width="330" height="218" rx="14" fill="#1b1b1b" stroke="#343434"/>
+      <rect width="330" height="3" fill="#4caf50"/>
+      <text x="20" y="34" fill="#a7a7a7" font-size="13" font-weight="700">BATTERY BANK</text>
+      <text x="20" y="116" fill="#4caf50" font-size="78" font-weight="620">61<tspan font-size="28" fill="#a7a7a7"> %</tspan></text>
+      <text x="20" y="152" fill="#a7a7a7">Discharging at 330 W</text>
+      <text x="20" y="190" fill="#777">770 Ah</text><text x="130" y="190" fill="#777">13.18 V</text><text x="230" y="190" fill="#777">30 h 44 m</text>
+    </g>
+    <g transform="translate(1086 330)">
+      <rect width="330" height="302" rx="14" fill="#1b1b1b" stroke="#343434"/>
+      <text x="20" y="34" fill="#a7a7a7" font-size="13" font-weight="700">BATTERY COMPARISON</text>
+      <rect x="18" y="58" width="294" height="86" rx="10" fill="#202020" stroke="#2a2a2a"/>
+      <text x="36" y="96" fill="#f2f2f2" font-size="24">Battery 1</text><text x="212" y="96" fill="#4caf50" font-size="26">64%</text>
+      <rect x="18" y="158" width="294" height="86" rx="10" fill="#202020" stroke="#2a2a2a"/>
+      <text x="36" y="196" fill="#f2f2f2" font-size="24">Battery 2</text><text x="212" y="196" fill="#4caf50" font-size="26">58%</text>
+      <text x="20" y="274" fill="#777">SOC difference 6.1% · Minor imbalance</text>
+    </g>
+    <g transform="translate(24 654)">
+      <rect width="330" height="190" rx="14" fill="#1b1b1b" stroke="#343434"/>
+      <text x="20" y="36" fill="#a7a7a7" font-size="13" font-weight="700">TODAY'S ENERGY</text>
+      <text x="20" y="78" fill="#777">Solar generated</text><text x="238" y="78" fill="#f2f2f2">8.19 kWh</text>
+      <text x="20" y="112" fill="#777">Battery energy in</text><text x="238" y="112" fill="#f2f2f2">1004.84 kWh</text>
+      <text x="20" y="146" fill="#777">Battery energy out</text><text x="238" y="146" fill="#f2f2f2">978.93 kWh</text>
+    </g>
+    <g transform="translate(370 654)">
+      <rect width="1046" height="190" rx="14" fill="#1b1b1b" stroke="#343434"/>
+      <text x="20" y="36" fill="#a7a7a7" font-size="13" font-weight="700">ENERGY HISTORY</text>
+      <line x1="36" y1="156" x2="1010" y2="156" stroke="#2a2a2a"/>
+      <g opacity=".85">
+        <rect x="60" y="110" width="16" height="46" fill="#f59e0b"/><rect x="84" y="130" width="16" height="26" fill="#4caf50"/><rect x="108" y="92" width="16" height="64" fill="#e85668"/>
+        <rect x="190" y="80" width="16" height="76" fill="#f59e0b"/><rect x="214" y="120" width="16" height="36" fill="#4caf50"/><rect x="238" y="86" width="16" height="70" fill="#e85668"/>
+        <rect x="320" y="64" width="16" height="92" fill="#f59e0b"/><rect x="344" y="126" width="16" height="30" fill="#4caf50"/><rect x="368" y="76" width="16" height="80" fill="#e85668"/>
+        <rect x="450" y="116" width="16" height="40" fill="#f59e0b"/><rect x="474" y="100" width="16" height="56" fill="#4b9cd3"/><rect x="498" y="84" width="16" height="72" fill="#e85668"/>
+        <rect x="580" y="142" width="16" height="14" fill="#61b8c8"/><rect x="604" y="112" width="16" height="44" fill="#4caf50"/><rect x="628" y="92" width="16" height="64" fill="#e85668"/>
+      </g>
+    </g>
+  </g>
+</svg>

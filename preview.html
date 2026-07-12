@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campervan Energy Dashboard Preview</title>
+  <script type="module" src="./campervan-energy-dashboard.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: #111;
+    }
+  </style>
+</head>
+<body>
+  <campervan-energy-dashboard></campervan-energy-dashboard>
+  <script>
+    const states = {
+      "sensor.epever_pv_voltage": state("86.4"),
+      "sensor.epever_pv_current": state("5.8"),
+      "sensor.epever_pv_power": state("501"),
+      "sensor.epever_energy_generated_today": state("8190"),
+      "sensor.epever_charging_mode_code": state("2"),
+      "sensor.epever_charger_status_code": state("1"),
+      "sensor.epever_battery_status_code": state("0"),
+      "sensor.epever_device_temperature": state("30.0"),
+      "sensor.epever_component_temperature": state("25.0"),
+      "sensor.epever_max_pv_voltage_today": state("106.29"),
+      "sensor.epever_min_pv_voltage_today": state("0.0"),
+      "sensor.charger_alternator_voltage": state("14.2"),
+      "sensor.charger_alternator_current": state("22.4"),
+      "sensor.charger_alternator_power": state("318"),
+      "sensor.charger_hookup_voltage": state("0"),
+      "sensor.charger_hookup_current": state("0"),
+      "sensor.charger_hookup_power": state("0"),
+      "sensor.fogstar_bms_state_of_charge": state("61.4"),
+      "sensor.fogstar_bms_voltage": state("13.18"),
+      "sensor.fogstar_bms_current": state("-25.07"),
+      "sensor.battery_wattage": state("-330.4"),
+      "sensor.battery_in_wattage": state("0.0"),
+      "sensor.battery_out_wattage": state("330.4"),
+      "sensor.fogstar_bms_remaining_capacity": state("770.7"),
+      "sensor.battery_remaining_time": state("30 hours, 44 minutes remaining"),
+      "sensor.charger_total_wattage": state("318"),
+      "sensor.fogstar_bms_nominal_capacity": state("1256.0"),
+      "sensor.fogstar_bms_cycles": state("2"),
+      "sensor.fogstar_bms_protection_flags": state("OK"),
+      "sensor.fogstar_bms_fet_state": state("Charge and discharge enabled"),
+      "sensor.fogstar_bms_cell_voltage_delta": state("0.009"),
+      "sensor.fogstar_bms_highest_temperature": state("28.0"),
+      "sensor.fogstar_bms_lowest_temperature": state("27.4"),
+      "sensor.battery_1_status": state("Discharging"),
+      "sensor.battery_1_current": state("-11.0"),
+      "sensor.battery_1_voltage": state("13.18"),
+      "sensor.battery_1_state_of_charge": state("64.4"),
+      "sensor.battery_1_remaining_capacity": state("404.3"),
+      "sensor.battery_1_cell_1_voltage": state("3.297"),
+      "sensor.battery_1_cell_2_voltage": state("3.299"),
+      "sensor.battery_1_cell_3_voltage": state("3.298"),
+      "sensor.battery_1_cell_4_voltage": state("3.290"),
+      "sensor.battery_1_temperature_1": state("27.4"),
+      "sensor.battery_1_temperature_2": state("27.7"),
+      "sensor.battery_1_temperature_3": state("27.4"),
+      "sensor.battery_2_status": state("Discharging"),
+      "sensor.battery_2_current": state("-13.6"),
+      "sensor.battery_2_voltage": state("13.18"),
+      "sensor.battery_2_state_of_charge": state("58.3"),
+      "sensor.battery_2_remaining_capacity": state("366.3"),
+      "sensor.battery_2_cell_1_voltage": state("3.296"),
+      "sensor.battery_2_cell_2_voltage": state("3.297"),
+      "sensor.battery_2_cell_3_voltage": state("3.298"),
+      "sensor.battery_2_cell_4_voltage": state("3.290"),
+      "sensor.battery_2_temperature_1": state("27.8"),
+      "sensor.battery_2_temperature_2": state("28.0"),
+      "sensor.battery_2_temperature_3": state("27.4"),
+      "input_number.charger_1_max_charge_current": state("50.0"),
+      "input_number.charger_2_max_charge_current": state("10.0"),
+      "sensor.battery_input_kwh": state("1004.84"),
+      "sensor.battery_out_kwh": state("978.93")
+    };
+
+    function state(value) {
+      return { state: value, attributes: {} };
+    }
+
+    customElements.whenDefined("campervan-energy-dashboard").then(() => {
+      const card = document.querySelector("campervan-energy-dashboard");
+      card.setConfig({
+        render_url: "",
+        model_url: "",
+        three_module_url: "",
+        gltf_loader_url: ""
+      });
+      card.hass = {
+        states,
+        callService(domain, service, data) {
+          const entity = data.entity_id;
+          if (states[entity]) states[entity].state = String(data.value);
+          card.hass = this;
+          return Promise.resolve();
+        },
+        callWS() {
+          return Promise.reject(new Error("Preview does not provide recorder data"));
+        }
+      };
+    });
+  </script>
+</body>
+</html>
