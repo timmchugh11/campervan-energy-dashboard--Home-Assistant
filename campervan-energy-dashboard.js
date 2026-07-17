@@ -1743,19 +1743,33 @@ class CampervanEnergyDashboard extends HTMLElement {
         const solarLight = new T.SpotLight(0xf59e0b, 0, 4, Math.PI / 3, 0.55, 2);
         const engineLight = new T.SpotLight(0x4b9cd3, 0, 3, Math.PI / 3, 0.6, 2);
         const batteryLight = new T.SpotLight(0x4caf50, 0, 3, Math.PI / 3, 0.6, 2);
+        const hookupWashLight = new T.SpotLight(0x61b8c8, 5.5, 5, Math.PI / 3, 0.55, 2);
         const solarTarget = new T.Object3D();
         const engineTarget = new T.Object3D();
         const batteryTarget = new T.Object3D();
+        const hookupWashTarget = new T.Object3D();
         solarLight.position.set(-0.63, 4.25, -1.82);
         engineLight.position.set(-0.6, 2.25, 2.55);
         batteryLight.position.set(1.45, 1.45, -2.33);
+        hookupWashLight.position.set(1.5, 3.1, -3.15);
         solarTarget.position.set(-0.63, 2.87, -1.82);
         engineTarget.position.set(-0.6, 1.05, 2.55);
         batteryTarget.position.set(0.42, 1.41, -2.33);
+        hookupWashTarget.position.set(0.15, 1.35, -2.55);
         solarLight.target = solarTarget;
         engineLight.target = engineTarget;
         batteryLight.target = batteryTarget;
-        model.add(solarLight, engineLight, batteryLight, solarTarget, engineTarget, batteryTarget);
+        hookupWashLight.target = hookupWashTarget;
+        model.add(
+          solarLight,
+          engineLight,
+          batteryLight,
+          hookupWashLight,
+          solarTarget,
+          engineTarget,
+          batteryTarget,
+          hookupWashTarget
+        );
 
         const restoreHighlights = () => {
           originalMaterials.forEach((material, mesh) => { mesh.material = material; });
@@ -1796,17 +1810,39 @@ class CampervanEnergyDashboard extends HTMLElement {
           return bounds.getCenter(new T.Vector3());
         };
         const applyHighlight = (name) => {
-          if (name === "solar") solarLight.intensity = 4.2;
+          if (name === "solar") solarLight.intensity = 8;
           if (name === "engine") engineLight.intensity = 4.2;
           if (name === "hookup") highlightNodes(["Hookup"], 0x61b8c8);
           if (name === "battery") batteryLight.intensity = 4.2;
         };
         let activeView = "overview";
         let powerState = this._modelPowerState || {};
+        let restPulseFrame = 0;
+        const stopRestPulse = () => {
+          if (restPulseFrame) cancelAnimationFrame(restPulseFrame);
+          restPulseFrame = 0;
+        };
+        const startRestPulse = () => {
+          stopRestPulse();
+          if (activeView !== "overview" || (!powerState.solar && !powerState.engine)) return;
+          const pulse = (now) => {
+            if (!this.isConnected || activeView !== "overview" || (!powerState.solar && !powerState.engine)) {
+              restPulseFrame = 0;
+              return;
+            }
+            const phase = (Math.sin(now / 500) + 1) / 2;
+            if (powerState.solar) solarLight.intensity = 6.5 + phase * 3.5;
+            if (powerState.engine) engineLight.intensity = 3.2 + phase * 3;
+            renderScene();
+            restPulseFrame = requestAnimationFrame(pulse);
+          };
+          restPulseFrame = requestAnimationFrame(pulse);
+        };
         const applyRestHighlights = () => {
           ["solar", "engine", "hookup", "battery"].forEach((name) => {
             if (powerState[name]) applyHighlight(name);
           });
+          startRestPulse();
         };
         const moveCamera = (position, target) => {
           const fromPosition = camera.position.clone();
@@ -1825,6 +1861,7 @@ class CampervanEnergyDashboard extends HTMLElement {
         };
         const focus = (name) => {
           activeView = name;
+          stopRestPulse();
           restoreHighlights();
           if (name === "overview") {
             applyRestHighlights();
