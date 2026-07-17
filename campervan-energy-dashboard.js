@@ -1729,14 +1729,56 @@ class CampervanEnergyDashboard extends HTMLElement {
         const defaultPosition = camera.position.clone();
         const currentTarget = new T.Vector3(0, view.lookAtY, 0);
         const defaultTarget = currentTarget.clone();
-        const modelBounds = new T.Box3().setFromObject(model);
-        const modelCenter = modelBounds.getCenter(new T.Vector3());
-        const modelSize = modelBounds.getSize(new T.Vector3());
-        const relativeTarget = (x, y, z) => modelCenter.clone().add(new T.Vector3(
-          modelSize.x * x,
-          modelSize.y * y,
-          modelSize.z * z
-        ));
+        const originalMaterials = new Map();
+        const engineLight = new T.SpotLight(0x4b9cd3, 0, 3, Math.PI / 3, 0.6, 2);
+        const batteryLight = new T.SpotLight(0x4caf50, 0, 3, Math.PI / 3, 0.6, 2);
+        const engineTarget = new T.Object3D();
+        const batteryTarget = new T.Object3D();
+        engineLight.position.set(-0.6, 2.25, 2.25);
+        batteryLight.position.set(0.25, 1.85, -1.75);
+        engineTarget.position.set(-0.6, 1.05, 2.25);
+        batteryTarget.position.set(0.25, 0.65, -1.75);
+        engineLight.target = engineTarget;
+        batteryLight.target = batteryTarget;
+        model.add(engineLight, batteryLight, engineTarget, batteryTarget);
+
+        const restoreHighlights = () => {
+          originalMaterials.forEach((material, mesh) => { mesh.material = material; });
+          originalMaterials.clear();
+          engineLight.intensity = 0;
+          batteryLight.intensity = 0;
+        };
+        const highlightNodes = (names, color) => {
+          model.traverse((object) => {
+            if (!names.some((name) => object.name === name || object.name.startsWith(name))) return;
+            object.traverse((child) => {
+              if (!child.isMesh || originalMaterials.has(child)) return;
+              originalMaterials.set(child, child.material);
+              const materials = Array.isArray(child.material) ? child.material : [child.material];
+              const highlighted = materials.map((material) => {
+                const clone = material.clone();
+                if (clone.emissive) {
+                  clone.emissive.setHex(color);
+                  clone.emissiveIntensity = 0.65;
+                } else if (clone.color) {
+                  clone.color.setHex(color);
+                }
+                return clone;
+              });
+              child.material = Array.isArray(child.material) ? highlighted : highlighted[0];
+            });
+          });
+        };
+        const nodeCenter = (names, fallback) => {
+          const objects = [];
+          model.traverse((object) => {
+            if (names.some((name) => object.name === name || object.name.startsWith(name))) objects.push(object);
+          });
+          if (!objects.length) return model.localToWorld(fallback.clone());
+          const bounds = new T.Box3();
+          objects.forEach((object) => bounds.expandByObject(object));
+          return bounds.getCenter(new T.Vector3());
+        };
         const moveCamera = (position, target) => {
           const fromPosition = camera.position.clone();
           const fromTarget = currentTarget.clone();
@@ -1753,30 +1795,36 @@ class CampervanEnergyDashboard extends HTMLElement {
           requestAnimationFrame(frame);
         };
         const focus = (name) => {
+          restoreHighlights();
           if (name === "overview") {
             moveCamera(defaultPosition, defaultTarget);
             return;
           }
           const presets = {
             solar: {
-              target: relativeTarget(0, 0.35, 0),
-              offset: new T.Vector3(3.8, 4.5, 3.3)
+              target: nodeCenter(["Cube_Material_0"], new T.Vector3(-0.6, 2.8, -1.8)),
+              offset: new T.Vector3(3.8, 4.5, 3.3),
+              highlight: () => highlightNodes(["Cube_Material_0"], 0xf59e0b)
             },
             engine: {
-              target: relativeTarget(0, 0, 0.35),
-              offset: new T.Vector3(3.5, 2.2, 4.2)
+              target: model.localToWorld(new T.Vector3(-0.6, 1.15, 2.15)),
+              offset: new T.Vector3(3.5, 2.2, 4.2),
+              highlight: () => { engineLight.intensity = 4.2; }
             },
             hookup: {
-              target: relativeTarget(0, 0, -0.35),
-              offset: new T.Vector3(-3.8, 2.1, -3.6)
+              target: nodeCenter(["Hookup"], new T.Vector3(-1.67, 0.6, -3.5)),
+              offset: new T.Vector3(-3.8, 2.1, -3.6),
+              highlight: () => highlightNodes(["Hookup"], 0x61b8c8)
             },
             battery: {
-              target: relativeTarget(0.25, -0.1, 0),
-              offset: new T.Vector3(3.8, 2.0, -3.8)
+              target: model.localToWorld(new T.Vector3(0.25, 0.72, -1.75)),
+              offset: new T.Vector3(3.8, 2.0, -3.8),
+              highlight: () => { batteryLight.intensity = 4.2; }
             }
           };
           const preset = presets[name];
           if (!preset) return;
+          preset.highlight();
           moveCamera(preset.target.clone().add(preset.offset), preset.target);
         };
         this._modelController = { focus };
