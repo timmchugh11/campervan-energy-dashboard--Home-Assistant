@@ -1,135 +1,261 @@
-const CARD_VERSION = "0.1.0";
+const CARD_VERSION = "0.3.0";
 
 const DEFAULT_CONFIG = {
-  title: "Campervan Energy",
+  title: "Campervan Energy Dashboard",
   model_url: "/local/van_power/van.glb",
   render_url: "",
-  three_module_url: "/local/van_power/van-power-card-deps.js",
-  gltf_loader_url: "/local/van_power/van-power-card-deps.js",
+  three_module_url: "/local/van_power/vendor/three/build/three.module.js",
+  gltf_loader_url: "/local/van_power/vendor/three/examples/jsm/loaders/GLTFLoader.js",
   show_time: true,
   entities: {
     solar: {
-      pv_voltage: "sensor.epever_pv_voltage",
-      pv_current: "sensor.epever_pv_current",
-      pv_power: "sensor.epever_pv_power",
-      generated_today: "sensor.epever_energy_generated_today",
-      generated_today_fallback: "sensor.solar_kwh",
-      charging_mode: "sensor.epever_charging_mode_code",
-      charger_status: "sensor.epever_charger_status_code",
-      battery_status: "sensor.epever_battery_status_code",
-      device_temperature: "sensor.epever_device_temperature",
-      component_temperature: "sensor.epever_component_temperature",
-      maximum_pv_voltage_today: "sensor.epever_max_pv_voltage_today",
-      minimum_pv_voltage_today: "sensor.epever_min_pv_voltage_today"
+      pv_voltage: null,
+      pv_current: null,
+      pv_power: null,
+      generated_today: null,
+      generated_today_fallback: null,
+      charging_mode: null,
+      charger_status: null,
+      battery_status: null,
+      device_temperature: null,
+      component_temperature: null,
+      maximum_pv_voltage_today: null,
+      minimum_pv_voltage_today: null
     },
     alternator: {
-      voltage: "sensor.charger_alternator_voltage",
-      current: "sensor.charger_alternator_current",
-      power: "sensor.charger_alternator_power",
+      voltage: null,
+      current: null,
+      power: null,
       charger_1: {
-        voltage: "sensor.charger_1_alternator_voltage",
-        current: "sensor.charger_1_alternator_current",
-        power: "sensor.charger_1_alternator_power"
+        voltage: null,
+        current: null,
+        power: null
       },
       charger_2: {
-        voltage: "sensor.charger_2_alternator_voltage",
-        current: "sensor.charger_2_alternator_current",
-        power: "sensor.charger_2_alternator_power"
+        voltage: null,
+        current: null,
+        power: null
       }
     },
     hookup: {
-      voltage: "sensor.charger_hookup_voltage",
-      current: "sensor.charger_hookup_current",
-      power: "sensor.charger_hookup_power",
+      voltage: null,
+      current: null,
+      power: null,
       charger_1: {
-        voltage: "sensor.charger_1_hookup_voltage",
-        current: "sensor.charger_1_hookup_current",
-        power: "sensor.charger_1_hookup_power"
+        voltage: null,
+        current: null,
+        power: null
       },
       charger_2: {
-        voltage: "sensor.charger_2_hookup_voltage",
-        current: "sensor.charger_2_hookup_current",
-        power: "sensor.charger_2_hookup_power"
+        voltage: null,
+        current: null,
+        power: null
       }
     },
     bank: {
-      state_of_charge: "sensor.fogstar_bms_state_of_charge",
-      voltage: "sensor.fogstar_bms_voltage",
-      current: "sensor.fogstar_bms_current",
-      net_power: "sensor.battery_wattage",
-      input_power: "sensor.battery_in_wattage",
-      output_power: "sensor.battery_out_wattage",
-      remaining_capacity: "sensor.fogstar_bms_remaining_capacity",
-      remaining_time: "sensor.battery_remaining_time",
-      charger_total_power: "sensor.charger_total_wattage",
-      nominal_capacity: "sensor.fogstar_bms_nominal_capacity",
-      cycles: "sensor.fogstar_bms_cycles",
-      protection_flags: "sensor.fogstar_bms_protection_flags",
-      fet_state: "sensor.fogstar_bms_fet_state",
-      minimum_cell_voltage: "sensor.fogstar_bms_minimum_cell_voltage",
-      maximum_cell_voltage: "sensor.fogstar_bms_maximum_cell_voltage",
-      cell_voltage_delta: "sensor.fogstar_bms_cell_voltage_delta",
-      highest_temperature: "sensor.fogstar_bms_highest_temperature",
-      lowest_temperature: "sensor.fogstar_bms_lowest_temperature"
+      state_of_charge: null,
+      voltage: null,
+      current: null,
+      net_power: null,
+      input_power: null,
+      output_power: null,
+      remaining_capacity: null,
+      remaining_time: null,
+      charger_total_power: null,
+      nominal_capacity: null,
+      cycles: null,
+      protection_flags: null,
+      fet_state: null,
+      minimum_cell_voltage: null,
+      maximum_cell_voltage: null,
+      cell_voltage_delta: null,
+      highest_temperature: null,
+      lowest_temperature: null
     },
     battery_1: {
-      status: "sensor.battery_1_status",
-      current: "sensor.battery_1_current",
-      voltage: "sensor.battery_1_voltage",
-      state_of_charge: "sensor.battery_1_state_of_charge",
-      remaining_capacity: "sensor.battery_1_remaining_capacity",
-      nominal_capacity: "sensor.battery_1_nominal_capacity",
-      cycles: "sensor.battery_1_cycles",
-      protection_flags: "sensor.battery_1_protection_flags",
-      fet_state: "sensor.battery_1_fet_state",
-      cell_1_voltage: "sensor.battery_1_cell_1_voltage",
-      cell_2_voltage: "sensor.battery_1_cell_2_voltage",
-      cell_3_voltage: "sensor.battery_1_cell_3_voltage",
-      cell_4_voltage: "sensor.battery_1_cell_4_voltage",
-      temperature_1: "sensor.battery_1_temperature_1",
-      temperature_2: "sensor.battery_1_temperature_2",
-      temperature_3: "sensor.battery_1_temperature_3"
+      status: null,
+      current: null,
+      voltage: null,
+      state_of_charge: null,
+      remaining_capacity: null,
+      nominal_capacity: null,
+      cycles: null,
+      protection_flags: null,
+      fet_state: null,
+      cell_1_voltage: null,
+      cell_2_voltage: null,
+      cell_3_voltage: null,
+      cell_4_voltage: null,
+      temperature_1: null,
+      temperature_2: null,
+      temperature_3: null
     },
     battery_2: {
-      status: "sensor.battery_2_status",
-      current: "sensor.battery_2_current",
-      voltage: "sensor.battery_2_voltage",
-      state_of_charge: "sensor.battery_2_state_of_charge",
-      remaining_capacity: "sensor.battery_2_remaining_capacity",
-      nominal_capacity: "sensor.battery_2_nominal_capacity",
-      cycles: "sensor.battery_2_cycles",
-      protection_flags: "sensor.battery_2_protection_flags",
-      fet_state: "sensor.battery_2_fet_state",
-      cell_1_voltage: "sensor.battery_2_cell_1_voltage",
-      cell_2_voltage: "sensor.battery_2_cell_2_voltage",
-      cell_3_voltage: "sensor.battery_2_cell_3_voltage",
-      cell_4_voltage: "sensor.battery_2_cell_4_voltage",
-      temperature_1: "sensor.battery_2_temperature_1",
-      temperature_2: "sensor.battery_2_temperature_2",
-      temperature_3: "sensor.battery_2_temperature_3"
+      status: null,
+      current: null,
+      voltage: null,
+      state_of_charge: null,
+      remaining_capacity: null,
+      nominal_capacity: null,
+      cycles: null,
+      protection_flags: null,
+      fet_state: null,
+      cell_1_voltage: null,
+      cell_2_voltage: null,
+      cell_3_voltage: null,
+      cell_4_voltage: null,
+      temperature_1: null,
+      temperature_2: null,
+      temperature_3: null
     },
     charger_1: {
-      maximum_current_control: "input_number.charger_1_max_charge_current",
-      battery_current: "sensor.charger_1_battery_current",
-      internal_temperature: "sensor.charger_1_internal_temperature",
-      state: "sensor.charger_1_charger_state",
-      alarms: "sensor.charger_1_charger_alarms"
+      maximum_current_control: null,
+      battery_current: null,
+      internal_temperature: null,
+      state: null,
+      alarms: null
     },
     charger_2: {
-      maximum_current_control: "input_number.charger_2_max_charge_current",
-      battery_current: "sensor.charger_2_battery_current",
-      internal_temperature: "sensor.charger_2_internal_temperature",
-      state: "sensor.charger_2_charger_state",
-      alarms: "sensor.charger_2_charger_alarms"
+      maximum_current_control: null,
+      battery_current: null,
+      internal_temperature: null,
+      state: null,
+      alarms: null
     },
     summary: {
       total_consumption_today: null,
-      solar_total: "sensor.solar_kwh",
-      battery_input_total: "sensor.battery_input_kwh",
-      battery_output_total: "sensor.battery_out_kwh"
+      solar_total: null,
+      battery_input_total: null,
+      battery_output_total: null
     }
   }
 };
+
+const entityField = (path, label, domains = ["sensor"]) => ({ path, label, domains });
+
+const ENTITY_EDITOR_GROUPS = [
+  {
+    title: "Solar",
+    fields: [
+      entityField("entities.solar.pv_voltage", "PV voltage"),
+      entityField("entities.solar.pv_current", "PV current"),
+      entityField("entities.solar.pv_power", "PV power"),
+      entityField("entities.solar.generated_today", "Energy generated today"),
+      entityField("entities.solar.generated_today_fallback", "Generated today fallback"),
+      entityField("entities.solar.charging_mode", "Charging mode"),
+      entityField("entities.solar.charger_status", "Charger status"),
+      entityField("entities.solar.battery_status", "Battery status"),
+      entityField("entities.solar.device_temperature", "Device temperature"),
+      entityField("entities.solar.component_temperature", "Component temperature"),
+      entityField("entities.solar.maximum_pv_voltage_today", "Maximum PV voltage today"),
+      entityField("entities.solar.minimum_pv_voltage_today", "Minimum PV voltage today")
+    ]
+  },
+  {
+    title: "Alternator",
+    fields: [
+      entityField("entities.alternator.voltage", "Combined voltage"),
+      entityField("entities.alternator.current", "Combined current"),
+      entityField("entities.alternator.power", "Combined power"),
+      entityField("entities.alternator.charger_1.voltage", "Charger 1 voltage"),
+      entityField("entities.alternator.charger_1.current", "Charger 1 current"),
+      entityField("entities.alternator.charger_1.power", "Charger 1 power"),
+      entityField("entities.alternator.charger_2.voltage", "Charger 2 voltage"),
+      entityField("entities.alternator.charger_2.current", "Charger 2 current"),
+      entityField("entities.alternator.charger_2.power", "Charger 2 power")
+    ]
+  },
+  {
+    title: "Hookup",
+    fields: [
+      entityField("entities.hookup.voltage", "Combined voltage"),
+      entityField("entities.hookup.current", "Combined current"),
+      entityField("entities.hookup.power", "Combined power"),
+      entityField("entities.hookup.charger_1.voltage", "Charger 1 voltage"),
+      entityField("entities.hookup.charger_1.current", "Charger 1 current"),
+      entityField("entities.hookup.charger_1.power", "Charger 1 power"),
+      entityField("entities.hookup.charger_2.voltage", "Charger 2 voltage"),
+      entityField("entities.hookup.charger_2.current", "Charger 2 current"),
+      entityField("entities.hookup.charger_2.power", "Charger 2 power")
+    ]
+  },
+  {
+    title: "Battery bank",
+    fields: [
+      entityField("entities.bank.state_of_charge", "State of charge"),
+      entityField("entities.bank.voltage", "Voltage"),
+      entityField("entities.bank.current", "Current"),
+      entityField("entities.bank.net_power", "Net power"),
+      entityField("entities.bank.input_power", "Input power"),
+      entityField("entities.bank.output_power", "Output power"),
+      entityField("entities.bank.remaining_capacity", "Remaining capacity"),
+      entityField("entities.bank.remaining_time", "Remaining time"),
+      entityField("entities.bank.charger_total_power", "Total charger power"),
+      entityField("entities.bank.nominal_capacity", "Nominal capacity"),
+      entityField("entities.bank.cycles", "Cycles"),
+      entityField("entities.bank.protection_flags", "Protection flags"),
+      entityField("entities.bank.fet_state", "FET state"),
+      entityField("entities.bank.minimum_cell_voltage", "Minimum cell voltage"),
+      entityField("entities.bank.maximum_cell_voltage", "Maximum cell voltage"),
+      entityField("entities.bank.cell_voltage_delta", "Cell voltage delta"),
+      entityField("entities.bank.highest_temperature", "Highest temperature"),
+      entityField("entities.bank.lowest_temperature", "Lowest temperature")
+    ]
+  },
+  ...[1, 2].map((index) => ({
+    title: `Battery ${index}`,
+    fields: [
+      entityField(`entities.battery_${index}.status`, "Status"),
+      entityField(`entities.battery_${index}.current`, "Current"),
+      entityField(`entities.battery_${index}.voltage`, "Voltage"),
+      entityField(`entities.battery_${index}.state_of_charge`, "State of charge"),
+      entityField(`entities.battery_${index}.remaining_capacity`, "Remaining capacity"),
+      entityField(`entities.battery_${index}.nominal_capacity`, "Nominal capacity"),
+      entityField(`entities.battery_${index}.cycles`, "Cycles"),
+      entityField(`entities.battery_${index}.protection_flags`, "Protection flags"),
+      entityField(`entities.battery_${index}.fet_state`, "FET state"),
+      entityField(`entities.battery_${index}.cell_1_voltage`, "Cell 1 voltage"),
+      entityField(`entities.battery_${index}.cell_2_voltage`, "Cell 2 voltage"),
+      entityField(`entities.battery_${index}.cell_3_voltage`, "Cell 3 voltage"),
+      entityField(`entities.battery_${index}.cell_4_voltage`, "Cell 4 voltage"),
+      entityField(`entities.battery_${index}.temperature_1`, "Temperature 1"),
+      entityField(`entities.battery_${index}.temperature_2`, "Temperature 2"),
+      entityField(`entities.battery_${index}.temperature_3`, "Temperature 3")
+    ]
+  })),
+  ...[1, 2].map((index) => ({
+    title: `Charger ${index}`,
+    fields: [
+      entityField(`entities.charger_${index}.maximum_current_control`, "Maximum current control", ["input_number", "number"]),
+      entityField(`entities.charger_${index}.battery_current`, "Battery current"),
+      entityField(`entities.charger_${index}.internal_temperature`, "Internal temperature"),
+      entityField(`entities.charger_${index}.state`, "State"),
+      entityField(`entities.charger_${index}.alarms`, "Alarms")
+    ]
+  })),
+  {
+    title: "Energy summary",
+    fields: [
+      entityField("entities.summary.total_consumption_today", "Total consumption today"),
+      entityField("entities.summary.solar_total", "Solar total"),
+      entityField("entities.summary.battery_input_total", "Battery input total"),
+      entityField("entities.summary.battery_output_total", "Battery output total")
+    ]
+  }
+];
+
+const EDITOR_GROUPS = [
+  {
+    title: "Optional visuals",
+    fields: [
+      { path: "render_url", label: "Fallback image URL", selector: { text: {} } },
+      { path: "model_url", label: "Custom GLB/GLTF model URL", selector: { text: {} } },
+      { path: "three_module_url", label: "Three.js module URL", selector: { text: {} } },
+      { path: "gltf_loader_url", label: "GLTFLoader module URL", selector: { text: {} } }
+    ]
+  },
+  ...ENTITY_EDITOR_GROUPS
+];
 
 const CSS = `
 :host {
@@ -161,7 +287,7 @@ const CSS = `
   overflow: hidden;
   padding: 10px 14px;
   display: grid;
-  grid-template-rows: 46px minmax(0, 1fr) clamp(170px, 23%, 250px) 58px;
+  grid-template-rows: minmax(0, 1fr) clamp(170px, 23%, 250px) 58px;
   gap: 8px;
 }
 .header {
@@ -398,6 +524,22 @@ h1 {
   font-weight: 580;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+.entity-value {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  text-align: inherit;
+}
+.entity-value:hover,
+.entity-value:focus-visible {
+  outline: none;
 }
 .van-stage {
   height: 100%;
@@ -720,7 +862,7 @@ input[type="range"] {
     height: auto;
     min-height: 0;
     overflow: visible;
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: auto auto auto;
   }
   .grid, .lower {
     grid-template-columns: 1fr;
@@ -765,25 +907,7 @@ input[type="range"] {
     gap: 8px;
   }
   .header {
-    grid-template-columns: minmax(0, 1fr) auto;
-    height: 42px;
-    gap: 8px;
-  }
-  .brand {
     display: none;
-  }
-  .header h1 {
-    text-align: left;
-    font-size: 18px;
-    white-space: nowrap;
-  }
-  .header-right {
-    justify-content: flex-end;
-    gap: 6px;
-  }
-  .status-pill {
-    padding: 0 7px;
-    font-size: 10px;
   }
   .grid, .column, .lower {
     gap: 8px;
@@ -910,26 +1034,15 @@ class CampervanEnergyDashboard extends HTMLElement {
     const renderUrl = this.config.render_url ? `url("${this.config.render_url}")` : "none";
     this.shadowRoot.innerHTML = `<style>${CSS}</style>
       <div class="page" style="--render-url: ${renderUrl}">
-        <header class="header">
-          <div class="brand">
-            <div class="van-icon" aria-hidden="true">${iconVan()}</div>
-            <span>Energy system</span>
-          </div>
-          <h1>${escapeHtml(this.config.title || "Campervan Energy")}</h1>
-          <div class="header-right">
-            <span class="status-pill"><span class="dot" data-status-dot></span><span data-system-status>Reading system</span></span>
-            <span class="status-pill" data-time></span>
-          </div>
-        </header>
         <section class="grid">
           <div class="column">
-            ${this.sourceCard("solar", "Solar", "Solar panels to EPEVER MPPT", "var(--ced-solar)")}
-            ${this.sourceCard("alternator", "Alternator", "Two DC-to-DC chargers to battery", "var(--ced-alt)")}
-            ${this.sourceCard("hookup", "Hookup", "Two charger hookup inputs to battery", "var(--ced-hookup)")}
+            ${this.sourceCard("solar", "Solar", "Solar charging input", "var(--ced-solar)")}
+            ${this.sourceCard("alternator", "Alternator", "Vehicle charging input", "var(--ced-alt)")}
+            ${this.sourceCard("hookup", "Shore power", "Mains charging input", "var(--ced-hookup)")}
           </div>
           <div class="column center-column">
             <div class="van-stage">
-              <div class="model-state" data-model-state>Loading van model</div>
+              <div class="model-state" data-model-state>${this.config.model_url ? "Loading custom van model" : "Generic van overview"}</div>
               <div class="van-silhouette" aria-hidden="true">${vanSilhouette()}</div>
               <div class="van-render" data-van-render></div>
               <div class="three-host" data-three-host></div>
@@ -999,8 +1112,10 @@ class CampervanEnergyDashboard extends HTMLElement {
   }
 
   chargerBreakdown(source) {
+    const indexes = ["1", "2"].filter((index) => hasConfiguredEntity(this.config.entities[source]?.[`charger_${index}`]));
+    if (!indexes.length) return "";
     return `<div class="charger-breakdown" aria-label="${source} by charger">
-      ${["1", "2"].map((index) => `<div class="charger-input-row">
+      ${indexes.map((index) => `<div class="charger-input-row">
         <span class="charger-name">Charger ${index}</span>
         <strong class="charger-power" data-${source}-charger-${index}-power>--</strong>
         <span class="charger-electrical" data-${source}-charger-${index}-electrical>--</span>
@@ -1014,7 +1129,7 @@ class CampervanEnergyDashboard extends HTMLElement {
       <div class="card-head">
         <div>
           <div class="label">Battery bank</div>
-          <div class="state">Combined Fogstar bank</div>
+          <div class="state">Combined battery storage</div>
         </div>
       </div>
       <div class="primary"><span data-bank-soc>--</span><span class="unit">%</span></div>
@@ -1028,6 +1143,8 @@ class CampervanEnergyDashboard extends HTMLElement {
   }
 
   batteryComparison() {
+    const indexes = ["1", "2"].filter((index) => hasConfiguredEntity(this.config.entities[`battery_${index}`]));
+    if (!indexes.length) return "";
     return `<article class="card" style="--accent: var(--ced-border)">
       <div class="card-head">
         <div>
@@ -1035,12 +1152,11 @@ class CampervanEnergyDashboard extends HTMLElement {
           <div class="state" data-comparison-status>--</div>
         </div>
       </div>
-      ${this.batteryStrip("1")}
-      ${this.batteryStrip("2")}
-      <div class="balance">
+      ${indexes.map((index) => this.batteryStrip(index)).join("")}
+      ${indexes.length > 1 ? `<div class="balance">
         <div class="metric-row"><span class="state">SOC difference</span><strong data-soc-diff>--</strong></div>
         <div class="metric-row"><span class="state">Current share</span><strong data-current-share>--</strong></div>
-      </div>
+      </div>` : ""}
     </article>`;
   }
 
@@ -1091,9 +1207,10 @@ class CampervanEnergyDashboard extends HTMLElement {
   }
 
   controls() {
+    const indexes = ["1", "2"].filter((index) => this.config.entities[`charger_${index}`]?.maximum_current_control);
+    if (!indexes.length) return "";
     return `<section class="controls">
-      ${this.sliderControl("1")}
-      ${this.sliderControl("2")}
+      ${indexes.map((index) => this.sliderControl(index)).join("")}
     </section>`;
   }
 
@@ -1109,6 +1226,21 @@ class CampervanEnergyDashboard extends HTMLElement {
   }
 
   bindEvents() {
+    if (!this._entityClickBound) {
+      this._entityClickBound = true;
+      this.addEventListener("click", (event) => {
+        const value = event.composedPath().find((node) => node?.dataset?.entityId);
+        const entityId = value?.dataset?.entityId;
+        if (!entityId) return;
+        event.preventDefault();
+        event.stopPropagation();
+        this.dispatchEvent(new CustomEvent("hass-more-info", {
+          detail: { entityId },
+          bubbles: true,
+          composed: true
+        }));
+      });
+    }
     this.shadowRoot.querySelectorAll("[data-charger-slider]").forEach((el) => {
       el.addEventListener("change", (event) => this.setChargerCurrent(event.currentTarget.dataset.chargerSlider, event.currentTarget.value));
       el.addEventListener("input", (event) => this.setText(`[data-charger-${event.currentTarget.dataset.chargerSlider}-value]`, `${event.currentTarget.value} A`));
@@ -1170,15 +1302,15 @@ class CampervanEnergyDashboard extends HTMLElement {
     this.updateSource("hookup", hookupPower, hookupVoltage, hookupCurrent, "2 charger inputs", hookupState);
     this.updateChargerBreakdown("hookup", hookupInputs);
 
-    this.setText("[data-consumption]", Number.isFinite(bankPower) ? fmtNum(bankPower, 0) : "--");
+    this.setEntityValue("[data-consumption]", e.bank.net_power, Number.isFinite(bankPower) ? fmtNum(bankPower, 0) : "--");
     this.setText("[data-consumption-state]", batteryPowerText(bankPower));
     const batteryPowerReadout = this.shadowRoot.querySelector("[data-battery-power-readout]");
     batteryPowerReadout?.classList.toggle("charging", bankPower > 20);
     batteryPowerReadout?.classList.toggle("discharging", bankPower < -20);
-    this.setText("[data-bank-soc]", this.state(e.bank.state_of_charge));
-    this.setText("[data-bank-capacity]", this.entityText(e.bank.remaining_capacity, "Ah", 0));
-    this.setText("[data-bank-voltage]", this.entityText(e.bank.voltage, "V", 2));
-    this.setText("[data-bank-time]", cleanTime(this.state(e.bank.remaining_time)));
+    this.setEntityValue("[data-bank-soc]", e.bank.state_of_charge, this.state(e.bank.state_of_charge));
+    this.setEntityText("[data-bank-capacity]", e.bank.remaining_capacity, "Ah", 0);
+    this.setEntityText("[data-bank-voltage]", e.bank.voltage, "V", 2);
+    this.setEntityValue("[data-bank-time]", e.bank.remaining_time, cleanTime(this.state(e.bank.remaining_time)));
     this.setText("[data-bank-status]", batteryStatus(bankPower, outputPower));
 
     this.updateBattery("1", e.battery_1);
@@ -1206,13 +1338,17 @@ class CampervanEnergyDashboard extends HTMLElement {
   }
 
   updateSource(key, power, voltage, current, extra, state) {
-    this.setText(`[data-${key}-power]`, fmtNum(Math.max(0, power), 0));
+    const entities = this.config.entities[key] || {};
+    const powerId = key === "solar" ? entities.pv_power : entities.power;
+    const voltageId = key === "solar" ? entities.pv_voltage : entities.voltage;
+    const currentId = key === "solar" ? entities.pv_current : entities.current;
+    this.setEntityValue(`[data-${key}-power]`, powerId, fmtNum(Math.max(0, power), 0));
     const active = power > 10;
     const hasVoltage = Number.isFinite(voltage) && Math.abs(voltage) > 0.05;
     const hasCurrent = Number.isFinite(current) && Math.abs(current) > 0.05;
-    this.setText(`[data-${key}-voltage]`, active || hasVoltage ? `${fmtNum(voltage, voltage > 50 ? 0 : 1)} V` : "--");
-    this.setText(`[data-${key}-current]`, active || hasCurrent ? `${fmtNum(current, 1)} A` : "--");
-    this.setText(`[data-${key}-extra]`, extra);
+    this.setEntityValue(`[data-${key}-voltage]`, voltageId, active || hasVoltage ? `${fmtNum(voltage, voltage > 50 ? 0 : 1)} V` : "--");
+    this.setEntityValue(`[data-${key}-current]`, currentId, active || hasCurrent ? `${fmtNum(current, 1)} A` : "--");
+    this.setEntityValue(`[data-${key}-extra]`, key === "solar" ? (entities.generated_today || entities.generated_today_fallback) : null, extra);
     this.setText(`[data-${key}-state]`, state);
     this.shadowRoot.querySelector(`[data-card="${key}"]`)?.classList.toggle("active", active);
     this.shadowRoot.querySelector(`[data-card="${key}"]`)?.classList.toggle("inactive", !active);
@@ -1224,6 +1360,7 @@ class CampervanEnergyDashboard extends HTMLElement {
       const entities = sourceMap[`charger_${index}`] || {};
       return {
         index,
+        entities,
         voltage: this.num(entities.voltage),
         current: this.num(entities.current),
         power: this.num(entities.power)
@@ -1238,12 +1375,13 @@ class CampervanEnergyDashboard extends HTMLElement {
       const hasCurrent = Number.isFinite(input.current) && Math.abs(input.current) > 0.05;
       const connectedThreshold = source === "alternator" ? 12.5 : 5;
       const state = input.power > 20 ? "Charging" : input.voltage > connectedThreshold ? "Available" : "Off";
-      this.setText(`[data-${source}-charger-${input.index}-power]`, hasPower ? `${fmtNum(Math.max(0, input.power), 0)} W` : "--");
+      this.setEntityValue(`[data-${source}-charger-${input.index}-power]`, input.entities.power, hasPower ? `${fmtNum(Math.max(0, input.power), 0)} W` : "--");
       const electrical = [
         hasVoltage ? `${fmtNum(input.voltage, 1)} V` : "--",
         hasCurrent ? `${fmtNum(input.current, 1)} A` : "--"
       ].join(" · ");
-      this.setText(`[data-${source}-charger-${input.index}-electrical]`, electrical);
+      const electricalIds = [input.entities.voltage, input.entities.current].filter(Boolean);
+      this.setEntityValue(`[data-${source}-charger-${input.index}-electrical]`, electricalIds[0], electrical);
       this.setText(`[data-${source}-charger-${input.index}-state]`, state);
     });
   }
@@ -1251,26 +1389,28 @@ class CampervanEnergyDashboard extends HTMLElement {
   updateBattery(index, entityMap) {
     const soc = this.num(entityMap.state_of_charge);
     const rawSoc = this.state(entityMap.state_of_charge);
-    this.setText(`[data-battery-${index}-ring]`, rawSoc !== undefined ? `${rawSoc}%` : "--");
+    this.setEntityValue(`[data-battery-${index}-ring]`, entityMap.state_of_charge, rawSoc !== undefined ? `${rawSoc}%` : "--");
     const ring = this.shadowRoot.querySelector(`[data-battery-${index}-ring]`);
     if (ring) ring.style.setProperty("--soc", `${Math.max(0, Math.min(100, soc || 0))}%`);
     this.setText(`[data-battery-${index}-status]`, "", true);
-    this.setText(`[data-battery-${index}-capacity]`, this.entityText(entityMap.remaining_capacity, "Ah", 0));
-    this.setText(`[data-battery-${index}-voltage]`, this.entityText(entityMap.voltage, "V", 2));
-    this.setText(`[data-battery-${index}-current]`, this.entityText(entityMap.current, "A", 1));
+    this.setEntityText(`[data-battery-${index}-capacity]`, entityMap.remaining_capacity, "Ah", 0);
+    this.setEntityText(`[data-battery-${index}-voltage]`, entityMap.voltage, "V", 2);
+    this.setEntityText(`[data-battery-${index}-current]`, entityMap.current, "A", 1);
   }
 
   updateSlider(index, entityId) {
     const value = this.num(entityId);
     const slider = this.shadowRoot.querySelector(`[data-charger-slider="${index}"]`);
     if (slider && Number.isFinite(value) && document.activeElement !== slider) slider.value = value;
-    this.setText(`[data-charger-${index}-value]`, Number.isFinite(value) ? `${fmtNum(value, 0)} A` : "--");
+    this.setEntityValue(`[data-charger-${index}-value]`, entityId, Number.isFinite(value) ? `${fmtNum(value, 0)} A` : "--");
   }
 
   async setChargerCurrent(index, value) {
     const entityId = this.config.entities[`charger_${index}`]?.maximum_current_control;
     if (!this._hass || !entityId) return;
-    await this._hass.callService("input_number", "set_value", {
+    const domain = entityId.split(".")[0];
+    if (!['input_number', 'number'].includes(domain)) return;
+    await this._hass.callService(domain, "set_value", {
       entity_id: entityId,
       value: Number(value)
     });
@@ -1279,13 +1419,14 @@ class CampervanEnergyDashboard extends HTMLElement {
   updateDailySummary() {
     const values = this._dailyEnergy || {};
     const text = (value) => Number.isFinite(value) ? `${fmtNum(value, 2)} kWh` : "--";
-    this.setText("[data-today-solar]", text(values.solar));
-    this.setText("[data-today-in]", text(values.batteryIn));
-    this.setText("[data-today-out]", text(values.batteryOut));
+    const summary = this.config.entities.summary;
+    this.setEntityValue("[data-today-solar]", summary.solar_total, text(values.solar));
+    this.setEntityValue("[data-today-in]", summary.battery_input_total, text(values.batteryIn));
+    this.setEntityValue("[data-today-out]", summary.battery_output_total, text(values.batteryOut));
     const net = Number.isFinite(values.batteryIn) && Number.isFinite(values.batteryOut)
       ? values.batteryIn - values.batteryOut
       : NaN;
-    this.setText("[data-today-net]", text(net));
+    this.setEntityValue("[data-today-net]", summary.battery_input_total, text(net));
   }
 
   async fetchHistory() {
@@ -1498,10 +1639,26 @@ class CampervanEnergyDashboard extends HTMLElement {
     if (el) el.textContent = allowEmpty ? String(value ?? "") : value || "--";
   }
 
+  setEntityValue(selector, entityId, value) {
+    const el = this.shadowRoot.querySelector(selector);
+    if (!el) return;
+    if (!entityId || value === undefined || value === null || value === "" || value === "--") {
+      el.textContent = value || "--";
+      return;
+    }
+    el.innerHTML = entityButton(entityId, value);
+  }
+
+  setEntityText(selector, entityId, unit, decimals = 1) {
+    this.setEntityValue(selector, entityId, this.entityText(entityId, unit, decimals));
+  }
+
   async startThree() {
     if (
       this._threeStarted ||
       !this.config.model_url ||
+      !this.config.three_module_url ||
+      !this.config.gltf_loader_url ||
       window.matchMedia("(max-width: 650px)").matches
     ) return;
     this._threeStarted = true;
@@ -1524,8 +1681,8 @@ class CampervanEnergyDashboard extends HTMLElement {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(host.clientWidth, host.clientHeight);
       host.appendChild(renderer.domElement);
-      scene.add(new T.AmbientLight(0xffffff, 1.8));
-      const key = new T.DirectionalLight(0xffffff, 2.6);
+      scene.add(new T.AmbientLight(0xffffff, 1.0));
+      const key = new T.DirectionalLight(0xffffff, 1.5);
       key.position.set(4, 5, 6);
       scene.add(key);
       const renderScene = () => renderer.render(scene, camera);
@@ -1538,62 +1695,20 @@ class CampervanEnergyDashboard extends HTMLElement {
         const size = box.getSize(new T.Vector3()).length();
         const center = box.getCenter(new T.Vector3());
         model.position.sub(center);
-        model.position.y += 0.02;
+        model.position.y += 0.34;
         model.scale.multiplyScalar(7.4 / size);
         model.updateMatrixWorld(true);
         const defaultPosition = camera.position.clone();
         const currentTarget = new T.Vector3(0, view.lookAtY, 0);
         const defaultTarget = currentTarget.clone();
-        const originalMaterials = new Map();
-        const engineLight = new T.SpotLight(0x4b9cd3, 0, 3, Math.PI / 3, 0.6, 2);
-        const batteryLight = new T.SpotLight(0x4caf50, 0, 3, Math.PI / 3, 0.6, 2);
-        const engineTarget = new T.Object3D();
-        const batteryTarget = new T.Object3D();
-        engineLight.position.set(-0.6, 2.25, 2.25);
-        batteryLight.position.set(0.25, 1.85, -1.75);
-        engineTarget.position.set(-0.6, 1.05, 2.25);
-        batteryTarget.position.set(0.25, 0.65, -1.75);
-        engineLight.target = engineTarget;
-        batteryLight.target = batteryTarget;
-        model.add(engineLight, batteryLight, engineTarget, batteryTarget);
-
-        const restoreMaterials = () => {
-          originalMaterials.forEach((material, mesh) => { mesh.material = material; });
-          originalMaterials.clear();
-          engineLight.intensity = 0;
-          batteryLight.intensity = 0;
-        };
-        const highlightNodes = (names, color) => {
-          model.traverse((object) => {
-            if (!names.some((name) => object.name === name || object.name.startsWith(name))) return;
-            object.traverse((child) => {
-              if (!child.isMesh || originalMaterials.has(child)) return;
-              originalMaterials.set(child, child.material);
-              const materials = Array.isArray(child.material) ? child.material : [child.material];
-              const highlighted = materials.map((material) => {
-                const clone = material.clone();
-                if (clone.emissive) {
-                  clone.emissive.setHex(color);
-                  clone.emissiveIntensity = 0.65;
-                } else if (clone.color) {
-                  clone.color.setHex(color);
-                }
-                return clone;
-              });
-              child.material = Array.isArray(child.material) ? highlighted : highlighted[0];
-            });
-          });
-        };
-        const nodeCenter = (names, fallback) => {
-          const objects = [];
-          model.traverse((object) => {
-            if (names.some((name) => object.name === name || object.name.startsWith(name))) objects.push(object);
-          });
-          if (!objects.length) return model.localToWorld(fallback.clone());
-          const bounds = new T.Box3();
-          objects.forEach((object) => bounds.expandByObject(object));
-          return bounds.getCenter(new T.Vector3());
-        };
+        const modelBounds = new T.Box3().setFromObject(model);
+        const modelCenter = modelBounds.getCenter(new T.Vector3());
+        const modelSize = modelBounds.getSize(new T.Vector3());
+        const relativeTarget = (x, y, z) => modelCenter.clone().add(new T.Vector3(
+          modelSize.x * x,
+          modelSize.y * y,
+          modelSize.z * z
+        ));
         const moveCamera = (position, target) => {
           const fromPosition = camera.position.clone();
           const fromTarget = currentTarget.clone();
@@ -1610,36 +1725,30 @@ class CampervanEnergyDashboard extends HTMLElement {
           requestAnimationFrame(frame);
         };
         const focus = (name) => {
-          restoreMaterials();
           if (name === "overview") {
             moveCamera(defaultPosition, defaultTarget);
             return;
           }
           const presets = {
             solar: {
-              target: nodeCenter(["Cube_Material_0"], new T.Vector3(-0.6, 2.8, -1.8)),
-              offset: new T.Vector3(3.8, 4.5, 3.3),
-              highlight: () => highlightNodes(["Cube_Material_0"], 0xf59e0b)
+              target: relativeTarget(0, 0.35, 0),
+              offset: new T.Vector3(3.8, 4.5, 3.3)
             },
             engine: {
-              target: model.localToWorld(new T.Vector3(-0.6, 1.15, 2.15)),
-              offset: new T.Vector3(3.5, 2.2, 4.2),
-              highlight: () => { engineLight.intensity = 4.2; }
+              target: relativeTarget(0, 0, 0.35),
+              offset: new T.Vector3(3.5, 2.2, 4.2)
             },
             hookup: {
-              target: nodeCenter(["Hookup"], new T.Vector3(-1.67, 0.6, -3.5)),
-              offset: new T.Vector3(-3.8, 2.1, -3.6),
-              highlight: () => highlightNodes(["Hookup"], 0x61b8c8)
+              target: relativeTarget(0, 0, -0.35),
+              offset: new T.Vector3(-3.8, 2.1, -3.6)
             },
             battery: {
-              target: model.localToWorld(new T.Vector3(0.25, 0.72, -1.75)),
-              offset: new T.Vector3(3.8, 2.0, -3.8),
-              highlight: () => { batteryLight.intensity = 4.2; }
+              target: relativeTarget(0.25, -0.1, 0),
+              offset: new T.Vector3(3.8, 2.0, -3.8)
             }
           };
           const preset = presets[name];
           if (!preset) return;
-          preset.highlight();
           moveCamera(preset.target.clone().add(preset.offset), preset.target);
         };
         this._modelController = { focus };
@@ -1648,8 +1757,8 @@ class CampervanEnergyDashboard extends HTMLElement {
         this.setText("[data-model-state]", "", true);
         renderScene();
       }, undefined, (error) => {
-        console.error("Campervan model failed to load", error);
-        this.setText("[data-model-state]", "Using fallback van outline");
+        console.error("Custom van model failed to load", error);
+        this.setText("[data-model-state]", "Using generic van illustration");
       });
       renderScene();
       const resize = new ResizeObserver(() => {
@@ -1660,14 +1769,130 @@ class CampervanEnergyDashboard extends HTMLElement {
       });
       resize.observe(host);
     } catch (error) {
-      console.error("Campervan 3D renderer failed to start", error);
+      console.error("Custom 3D renderer failed to start", error);
       host.remove();
-      this.setText("[data-model-state]", "Using fallback van outline");
+      this.setText("[data-model-state]", "Using generic van illustration");
     }
   }
 
   getCardSize() {
     return 12;
+  }
+}
+
+class CampervanEnergyDashboardEditor extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this._userConfig = { type: "custom:campervan-energy-dashboard" };
+    this._config = mergeConfig(DEFAULT_CONFIG, this._userConfig);
+    this._hass = undefined;
+  }
+
+  setConfig(config) {
+    this._userConfig = JSON.parse(JSON.stringify({
+      type: "custom:campervan-energy-dashboard",
+      ...(config || {})
+    }));
+    this._config = mergeConfig(DEFAULT_CONFIG, this._userConfig);
+    this.render();
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+    this.applyForms();
+  }
+
+  valueAtPath(path) {
+    return path.split(".").reduce((value, key) => value?.[key], this._config);
+  }
+
+  updatePath(path, value) {
+    const keys = path.split(".");
+    this.setPathValue(this._config, keys, value || null);
+    if (value) this.setPathValue(this._userConfig, keys, value);
+    else this.deletePathValue(this._userConfig, keys);
+    this.dispatchEvent(new CustomEvent("config-changed", {
+      detail: { config: this._userConfig },
+      bubbles: true,
+      composed: true
+    }));
+  }
+
+  setPathValue(target, keys, value) {
+    let cursor = target;
+    keys.slice(0, -1).forEach((key) => {
+      if (!cursor[key] || typeof cursor[key] !== "object") cursor[key] = {};
+      cursor = cursor[key];
+    });
+    cursor[keys[keys.length - 1]] = value;
+  }
+
+  deletePathValue(target, keys) {
+    const parents = [];
+    let cursor = target;
+    for (const key of keys.slice(0, -1)) {
+      if (!cursor[key] || typeof cursor[key] !== "object") return;
+      parents.push([cursor, key]);
+      cursor = cursor[key];
+    }
+    delete cursor[keys[keys.length - 1]];
+    parents.reverse().forEach(([parent, key]) => {
+      if (!Object.keys(parent[key]).length) delete parent[key];
+    });
+  }
+
+  selectorFor(field) {
+    if (field.selector) return field.selector;
+    const domains = field.domains || [];
+    return {
+      entity: domains.length ? { domain: domains.length === 1 ? domains[0] : domains } : {}
+    };
+  }
+
+  applyForms() {
+    this.shadowRoot?.querySelectorAll("ha-form[data-path]").forEach((form) => {
+      const path = form.dataset.path;
+      const field = EDITOR_GROUPS.flatMap((group) => group.fields).find((item) => item.path === path);
+      if (!field) return;
+      form.hass = this._hass;
+      form.data = { value: this.valueAtPath(path) || "" };
+      form.schema = [{ name: "value", label: field.label, selector: this.selectorFor(field) }];
+      form.computeLabel = (schema) => schema.label || schema.name;
+      if (form.dataset.bound === "true") return;
+      form.dataset.bound = "true";
+      form.addEventListener("value-changed", (event) => {
+        this.updatePath(path, event.detail?.value?.value || "");
+      });
+    });
+  }
+
+  render() {
+    const groups = EDITOR_GROUPS.map((group, index) => `
+      <details class="group" ${index < 4 ? "open" : ""}>
+        <summary>${escapeHtml(group.title)} <span>${group.fields.length}</span></summary>
+        <div class="grid">
+          ${group.fields.map((field) => `<ha-form data-path="${escapeHtml(field.path)}"></ha-form>`).join("")}
+        </div>
+      </details>
+    `).join("");
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host { display: block; color: var(--primary-text-color); }
+        .editor { display: grid; gap: 12px; padding: 8px 0 4px; }
+        .intro { color: var(--secondary-text-color); font-size: 13px; line-height: 1.45; }
+        .group { border: 1px solid var(--divider-color); border-radius: 12px; overflow: hidden; background: var(--card-background-color); }
+        summary { cursor: pointer; padding: 13px 14px; font-weight: 700; user-select: none; }
+        summary span { float: right; color: var(--secondary-text-color); font-size: 12px; font-weight: 500; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; padding: 2px 14px 16px; }
+        ha-form { display: block; min-width: 0; }
+      </style>
+      <div class="editor">
+        <div class="intro">Choose the entity for each reading. Entity pickers are filtered to compatible Home Assistant domains. The built-in van illustration needs no external assets; custom images and 3D models are optional.</div>
+        ${groups}
+      </div>
+    `;
+    this.applyForms();
   }
 }
 
@@ -1681,6 +1906,12 @@ function mergeConfig(base, extra) {
     }
   }
   return output;
+}
+
+function hasConfiguredEntity(value) {
+  if (typeof value === "string") return value.includes(".");
+  if (!value || typeof value !== "object") return false;
+  return Object.values(value).some(hasConfiguredEntity);
 }
 
 function fmtNum(value, decimals = 0) {
@@ -1728,19 +1959,28 @@ function rows(card, values, hideUnavailable = false) {
   return values.map(([label, entity, unit]) => {
     let value;
     if (Array.isArray(entity)) {
-      value = entity.map((id) => card.entityText(id, unit || "", unit ? 3 : 1).replace(` ${unit}`, "")).filter((item) => item !== "--").join(" / ");
-      if (value && unit) value += ` ${unit}`;
+      const rendered = entity.map((id) => {
+        const text = card.entityText(id, unit || "", unit ? 3 : 1).replace(` ${unit}`, "");
+        return text === "--" ? "" : entityButton(id, `${text}${unit ? ` ${unit}` : ""}`);
+      }).filter(Boolean);
+      value = rendered.join(" <span class=\"entity-separator\">/</span> ");
     } else {
-      value = unit ? card.entityText(entity, unit, unit === "V" ? 3 : 1) : card.state(entity);
+      const text = unit ? card.entityText(entity, unit, unit === "V" ? 3 : 1) : card.state(entity);
+      value = text ? entityButton(entity, text) : text;
     }
     if (!value || value === "--") {
       if (hideUnavailable) return "";
       value = `<span class="unavailable">--</span>`;
-    } else {
+    } else if (!value.includes("data-entity-id")) {
       value = escapeHtml(value);
     }
     return `<div class="metric-row"><span class="state">${escapeHtml(label)}</span><strong>${value}</strong></div>`;
   }).join("");
+}
+
+function entityButton(entityId, value) {
+  if (!entityId) return escapeHtml(value);
+  return `<button type="button" class="entity-value" data-entity-id="${escapeHtml(entityId)}" title="Show ${escapeHtml(entityId)} in Home Assistant">${escapeHtml(value)}</button>`;
 }
 
 function chartSvg(series, colors, labels = []) {
@@ -1847,5 +2087,10 @@ function escapeHtml(value) {
   }[char]));
 }
 
-customElements.define("campervan-energy-dashboard", CampervanEnergyDashboard);
+if (!customElements.get("campervan-energy-dashboard-editor")) {
+  customElements.define("campervan-energy-dashboard-editor", CampervanEnergyDashboardEditor);
+}
+if (!customElements.get("campervan-energy-dashboard")) {
+  customElements.define("campervan-energy-dashboard", CampervanEnergyDashboard);
+}
 console.info(`%c CAMPERVAN-ENERGY-DASHBOARD %c ${CARD_VERSION} `, "color: white; background: #4caf50; font-weight: 700;", "color: white; background: #1b1b1b; font-weight: 700;");

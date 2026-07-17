@@ -1,113 +1,131 @@
 # Campervan Energy Dashboard
 
-A single-page Home Assistant Lovelace custom card for a campervan power system. It replaces the existing `/lovelace/power` masonry view with a focused landscape dashboard built around the van, the battery bank, and the real energy inputs that already exist in Home Assistant.
+A configurable Home Assistant Lovelace card for campervan, RV, motorhome, and off-grid vehicle energy systems.
 
-The card is intentionally not a generic solar dashboard. Solar, alternator, and hookup are shown as inputs into the battery bank. The output side shows only aggregate campervan consumption.
+The dashboard presents solar, alternator, and shore-power inputs around a combined battery bank. It can also show optional per-battery diagnostics, two optional charger channels, daily energy totals, current controls, and recent history.
+
+No entity IDs, integration brands, local file paths, images, or 3D models are configured by default. Choose the entities that exist in your Home Assistant instance with the visual editor.
 
 ## Features
 
-- Single full-page Lovelace card with no sidebar or navigation.
-- Dark charcoal palette matching the current dashboard style.
-- Central van visual with active source flow overlays.
-- Optional Three.js GLB/GLTF model support.
-- Rendered-image fallback when the 3D model or Three.js cannot load.
-- Combined battery bank hero with SOC shown only once.
-- Individual Battery 1 and Battery 2 comparison strips.
-- Detail drawers for battery health, solar diagnostics, and charger diagnostics.
-- Charger 1 and Charger 2 max-current sliders.
-- Entity mapping kept in one easy-to-edit config object.
-- 24-hour recorder statistics chart when available, with a live snapshot fallback.
+- Native Home Assistant visual editor with searchable, domain-filtered entity pickers.
+- Vendor-neutral support for any integration that exposes suitable Home Assistant entities.
+- Combined battery-bank overview with optional details for up to two individual batteries.
+- Solar, alternator, and shore-power inputs with optional per-charger breakdowns.
+- Optional current controls using `input_number` or `number` entities.
+- Daily energy summary and a 24-hour history chart with a live snapshot fallback.
+- Built-in generic van illustration that requires no external assets.
+- Optional fallback image and optional custom GLB/GLTF model.
+- Sections for unconfigured individual batteries, charger inputs, and controls are hidden automatically.
 
-## HACS Installation
+## Installation
 
-1. Add this repository to HACS as a custom repository.
-2. Select category `Lovelace`.
-3. Install `Campervan Energy Dashboard`.
-4. Add the resource if HACS does not add it automatically:
+### HACS
 
-```yaml
-url: /hacsfiles/campervan-energy-dashboard/campervan-energy-dashboard.js
-type: module
-```
+1. Add this repository to HACS as a custom repository in the `Dashboard` category.
+2. Install **Campervan Energy Dashboard**.
+3. Reload the browser if HACS asks you to.
 
-For manual installation, place `campervan-energy-dashboard.js` in:
+HACS normally registers the JavaScript resource automatically.
+
+### Manual
+
+Copy `campervan-energy-dashboard.js` to:
 
 ```text
 config/www/community/campervan-energy-dashboard/campervan-energy-dashboard.js
 ```
 
-Then add:
+Add this dashboard resource:
 
 ```yaml
 url: /local/community/campervan-energy-dashboard/campervan-energy-dashboard.js
 type: module
 ```
 
-## Lovelace Usage
+## Add the card
 
-Create or replace the `/lovelace/power` view with a panel view containing the custom card:
+The card is designed for a panel view:
 
 ```yaml
 type: panel
-path: power
-icon: mdi:battery-50
+path: energy
+icon: mdi:solar-power
 cards:
   - type: custom:campervan-energy-dashboard
 ```
 
-The default entity mapping matches the entities currently used by your power view.
+Open the dashboard editor, edit the card, and select your entities. All fields are optional, so you can configure only the equipment and diagnostics available in your system.
 
-## Van Assets
+Useful starting fields are:
 
-Put your assets somewhere under Home Assistant `www`, for example:
+- Battery bank: state of charge, voltage, net power, input power, and output power.
+- Solar: PV power, voltage, current, and energy generated today.
+- Alternator and shore power: combined power, voltage, and current.
+- Energy summary: cumulative energy sensors measured in kWh.
 
-```text
-config/www/campervan-energy/van.glb
-config/www/campervan-energy/van-render.png
-```
+## YAML configuration
 
-Then configure:
-
-```yaml
-type: custom:campervan-energy-dashboard
-model_url: /local/campervan-energy/van.glb
-render_url: /local/campervan-energy/van-render.png
-```
-
-The rendered image is always used as a fallback if the model or Three.js import fails.
-
-## Entity Overrides
-
-Only override the entities you need to change:
+The visual editor is recommended, but the same settings can be written in YAML. Entity IDs below are examples only:
 
 ```yaml
 type: custom:campervan-energy-dashboard
 entities:
   solar:
-    pv_power: sensor.epever_pv_power
+    pv_voltage: sensor.camper_solar_voltage
+    pv_current: sensor.camper_solar_current
+    pv_power: sensor.camper_solar_power
+    generated_today: sensor.camper_solar_energy_today
+  alternator:
+    power: sensor.camper_alternator_power
+  hookup:
+    power: sensor.camper_shore_power
   bank:
-    state_of_charge: sensor.fogstar_bms_state_of_charge
-  charger_1:
-    maximum_current_control: input_number.charger_1_max_charge_current
+    state_of_charge: sensor.camper_battery_state_of_charge
+    voltage: sensor.camper_battery_voltage
+    current: sensor.camper_battery_current
+    net_power: sensor.camper_battery_power
+    input_power: sensor.camper_battery_charge_power
+    output_power: sensor.camper_battery_discharge_power
+  summary:
+    solar_total: sensor.camper_solar_energy
+    battery_input_total: sensor.camper_battery_energy_in
+    battery_output_total: sensor.camper_battery_energy_out
 ```
 
-## Current Default Mapping
+You can add individual battery and charger mappings through the visual editor or under `battery_1`, `battery_2`, `charger_1`, and `charger_2`.
 
-The built-in mapping includes:
+## Optional visuals
 
-- Solar: `sensor.epever_pv_voltage`, `sensor.epever_pv_current`, `sensor.epever_pv_power`, `sensor.epever_energy_generated_today`.
-- Alternator: `sensor.charger_alternator_voltage`, `sensor.charger_alternator_current`, `sensor.charger_alternator_power`.
-- Hookup: `sensor.charger_hookup_voltage`, `sensor.charger_hookup_current`, `sensor.charger_hookup_power`.
-- Bank: `sensor.fogstar_bms_state_of_charge`, `sensor.fogstar_bms_voltage`, `sensor.battery_wattage`, `sensor.battery_in_wattage`, `sensor.battery_out_wattage`.
-- Battery 1 and Battery 2: SOC, remaining capacity, voltage, current, status, cell voltages, and temperatures.
-- Controls: `input_number.charger_1_max_charge_current`, `input_number.charger_2_max_charge_current`.
+The built-in vector van is the default and does not require any downloads or local assets.
 
-## Preview
+For a custom rendered image, place it under Home Assistant's `www` directory and set `render_url`:
 
-Open `preview.html` in a browser for a mock preview using fake Home Assistant state data. `preview.svg` is a static rendered composition for quick visual review.
+```yaml
+type: custom:campervan-energy-dashboard
+render_url: /local/campervan-energy/van.png
+```
 
-## Notes
+A custom GLB/GLTF model is opt-in. Configure all three URLs:
 
-- Optional charger diagnostics are hidden or shown as `--` when entities report `unknown` or `unavailable`.
-- The history chart requests Home Assistant recorder statistics through the frontend WebSocket API. If recorder statistics are not available for the configured entities, the card displays a live snapshot fallback instead of inventing history.
-- The battery operating state assumes positive `sensor.battery_wattage` means charging and negative means discharging, matching the supplied implementation note.
+```yaml
+type: custom:campervan-energy-dashboard
+model_url: /local/campervan-energy/van.glb
+three_module_url: /local/campervan-energy/three.module.js
+gltf_loader_url: /local/campervan-energy/GLTFLoader.js
+```
+
+The modules must be browser-compatible ES modules that export Three.js and `GLTFLoader`. The card scales and centers the model from its bounds and does not require integration-specific mesh or node names. If any model asset is missing or cannot load, the generic illustration remains visible.
+
+## Entity behavior
+
+- Sensor pickers accept `sensor` entities.
+- Charger current controls accept `input_number` and `number` entities.
+- Missing, `unknown`, and `unavailable` values display as unavailable without inventing data.
+- Positive bank `net_power` means charging; negative means discharging. Use a template sensor to invert the sign if your integration reports the opposite convention.
+- Daily totals should report energy in kWh. Power readings should report watts, current amps, voltage volts, capacity amp-hours, and temperature degrees Celsius.
+- The history chart uses Home Assistant's history API for the configured power sensors and falls back to current values when history is unavailable.
+
+## Updating
+
+After replacing the JavaScript file, reload the dashboard resource or perform a hard refresh so the browser does not continue using a cached copy.
