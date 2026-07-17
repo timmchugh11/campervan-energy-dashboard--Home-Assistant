@@ -1005,6 +1005,7 @@ class CampervanEnergyDashboard extends HTMLElement {
     this._dailyEnergy = null;
     this._historyRequestedAt = 0;
     this._threeStarted = false;
+    this._selectedModelView = "overview";
     this._timeTimer = null;
     this._viewportHandler = () => {
       this.updateViewportHeight();
@@ -1293,6 +1294,7 @@ class CampervanEnergyDashboard extends HTMLElement {
   }
 
   selectModelView(view) {
+    this._selectedModelView = view;
     this.shadowRoot.querySelectorAll("[data-model-view]").forEach((el) => {
       el.classList.toggle("active", el.dataset.modelView === view);
     });
@@ -1343,6 +1345,13 @@ class CampervanEnergyDashboard extends HTMLElement {
 
     this.updateBattery("1", e.battery_1);
     this.updateBattery("2", e.battery_2);
+    this._modelPowerState = {
+      solar: solarPower > 10,
+      engine: altPower > 20,
+      hookup: hookupPower > 20,
+      battery: bankPower < -20
+    };
+    this._modelController?.setPowerState?.(this._modelPowerState);
     const diff = Math.abs(b1soc - b2soc);
     const totalCurrent = Math.abs(b1current) + Math.abs(b2current);
     const share1 = totalCurrent > 0 ? Math.abs(b1current) / totalCurrent * 100 : null;
@@ -1730,21 +1739,27 @@ class CampervanEnergyDashboard extends HTMLElement {
         const currentTarget = new T.Vector3(0, view.lookAtY, 0);
         const defaultTarget = currentTarget.clone();
         const originalMaterials = new Map();
+        const solarLight = new T.SpotLight(0xf59e0b, 0, 4, Math.PI / 3, 0.55, 2);
         const engineLight = new T.SpotLight(0x4b9cd3, 0, 3, Math.PI / 3, 0.6, 2);
         const batteryLight = new T.SpotLight(0x4caf50, 0, 3, Math.PI / 3, 0.6, 2);
+        const solarTarget = new T.Object3D();
         const engineTarget = new T.Object3D();
         const batteryTarget = new T.Object3D();
-        engineLight.position.set(-0.6, 2.25, 2.25);
+        solarLight.position.set(-0.63, 4.25, -1.82);
+        engineLight.position.set(-0.6, 2.25, 2.55);
         batteryLight.position.set(1.45, 1.45, -2.33);
-        engineTarget.position.set(-0.6, 1.05, 2.25);
+        solarTarget.position.set(-0.63, 2.87, -1.82);
+        engineTarget.position.set(-0.6, 1.05, 2.55);
         batteryTarget.position.set(0.42, 1.41, -2.33);
+        solarLight.target = solarTarget;
         engineLight.target = engineTarget;
         batteryLight.target = batteryTarget;
-        model.add(engineLight, batteryLight, engineTarget, batteryTarget);
+        model.add(solarLight, engineLight, batteryLight, solarTarget, engineTarget, batteryTarget);
 
         const restoreHighlights = () => {
           originalMaterials.forEach((material, mesh) => { mesh.material = material; });
           originalMaterials.clear();
+          solarLight.intensity = 0;
           engineLight.intensity = 0;
           batteryLight.intensity = 0;
         };
@@ -1779,6 +1794,19 @@ class CampervanEnergyDashboard extends HTMLElement {
           objects.forEach((object) => bounds.expandByObject(object));
           return bounds.getCenter(new T.Vector3());
         };
+        const applyHighlight = (name) => {
+          if (name === "solar") solarLight.intensity = 4.2;
+          if (name === "engine") engineLight.intensity = 4.2;
+          if (name === "hookup") highlightNodes(["Hookup"], 0x61b8c8);
+          if (name === "battery") batteryLight.intensity = 4.2;
+        };
+        let activeView = "overview";
+        let powerState = this._modelPowerState || {};
+        const applyRestHighlights = () => {
+          ["solar", "engine", "hookup", "battery"].forEach((name) => {
+            if (powerState[name]) applyHighlight(name);
+          });
+        };
         const moveCamera = (position, target) => {
           const fromPosition = camera.position.clone();
           const fromTarget = currentTarget.clone();
@@ -1795,8 +1823,10 @@ class CampervanEnergyDashboard extends HTMLElement {
           requestAnimationFrame(frame);
         };
         const focus = (name) => {
+          activeView = name;
           restoreHighlights();
           if (name === "overview") {
+            applyRestHighlights();
             moveCamera(defaultPosition, defaultTarget);
             return;
           }
@@ -1804,22 +1834,22 @@ class CampervanEnergyDashboard extends HTMLElement {
             solar: {
               target: nodeCenter(["Cube_Material_0"], new T.Vector3(-0.6, 2.8, -1.8)),
               offset: new T.Vector3(3.8, 4.5, 3.3),
-              highlight: () => highlightNodes(["Cube_Material_0"], 0xf59e0b)
+              highlight: () => applyHighlight("solar")
             },
             engine: {
               target: model.localToWorld(new T.Vector3(-0.6, 1.15, 2.15)),
               offset: new T.Vector3(3.5, 2.2, 4.2),
-              highlight: () => { engineLight.intensity = 4.2; }
+              highlight: () => applyHighlight("engine")
             },
             hookup: {
               target: nodeCenter(["Hookup"], new T.Vector3(-1.67, 0.6, -3.5)),
               offset: new T.Vector3(-3.8, 2.1, -3.6),
-              highlight: () => highlightNodes(["Hookup"], 0x61b8c8)
+              highlight: () => applyHighlight("hookup")
             },
             battery: {
               target: nodeCenter(["Small Door"], new T.Vector3(0.42, 1.41, -2.33)),
               offset: new T.Vector3(3.8, 2.0, -3.8),
-              highlight: () => { batteryLight.intensity = 4.2; }
+              highlight: () => applyHighlight("battery")
             }
           };
           const preset = presets[name];
@@ -1827,7 +1857,16 @@ class CampervanEnergyDashboard extends HTMLElement {
           preset.highlight();
           moveCamera(preset.target.clone().add(preset.offset), preset.target);
         };
-        this._modelController = { focus };
+        const setPowerState = (nextState) => {
+          powerState = nextState || {};
+          if (activeView !== "overview") return;
+          restoreHighlights();
+          applyRestHighlights();
+          renderScene();
+        };
+        this._modelController = { focus, setPowerState };
+        setPowerState(this._modelPowerState);
+        if (this._selectedModelView !== "overview") focus(this._selectedModelView);
         camera.lookAt(currentTarget);
         this.shadowRoot.querySelector(".van-stage")?.classList.add("model-loaded");
         this.setText("[data-model-state]", "", true);
