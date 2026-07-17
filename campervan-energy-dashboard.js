@@ -1731,16 +1731,22 @@ class CampervanEnergyDashboard extends HTMLElement {
         const defaultTarget = currentTarget.clone();
         const originalMaterials = new Map();
         const engineLight = new T.SpotLight(0x4b9cd3, 0, 3, Math.PI / 3, 0.6, 2);
+        const batteryLight = new T.SpotLight(0x4caf50, 0, 3, Math.PI / 3, 0.6, 2);
         const engineTarget = new T.Object3D();
+        const batteryTarget = new T.Object3D();
         engineLight.position.set(-0.6, 2.25, 2.25);
+        batteryLight.position.set(1.45, 1.45, -2.33);
         engineTarget.position.set(-0.6, 1.05, 2.25);
+        batteryTarget.position.set(0.42, 1.41, -2.33);
         engineLight.target = engineTarget;
-        model.add(engineLight, engineTarget);
+        batteryLight.target = batteryTarget;
+        model.add(engineLight, batteryLight, engineTarget, batteryTarget);
 
         const restoreHighlights = () => {
           originalMaterials.forEach((material, mesh) => { mesh.material = material; });
           originalMaterials.clear();
           engineLight.intensity = 0;
+          batteryLight.intensity = 0;
         };
         const highlightNodes = (names, color) => {
           model.traverse((object) => {
@@ -1813,7 +1819,7 @@ class CampervanEnergyDashboard extends HTMLElement {
             battery: {
               target: nodeCenter(["Small Door"], new T.Vector3(0.42, 1.41, -2.33)),
               offset: new T.Vector3(3.8, 2.0, -3.8),
-              highlight: () => highlightNodes(["Small Door"], 0x4caf50)
+              highlight: () => { batteryLight.intensity = 4.2; }
             }
           };
           const preset = presets[name];
