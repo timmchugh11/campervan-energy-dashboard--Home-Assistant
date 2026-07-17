@@ -1751,32 +1751,25 @@ class CampervanEnergyDashboard extends HTMLElement {
         const solarLight = new T.SpotLight(0xf59e0b, 0, 4, Math.PI / 3, 0.55, 2);
         const engineLight = new T.SpotLight(0x4b9cd3, 0, 3, Math.PI / 3, 0.6, 2);
         const batteryLight = new T.SpotLight(0x4caf50, 0, 3, Math.PI / 3, 0.6, 2);
-        const hookupWashLight = new T.SpotLight(0x61b8c8, 0, 5, Math.PI / 3, 0.55, 2);
         const solarTarget = new T.Object3D();
         const engineTarget = new T.Object3D();
         const batteryTarget = new T.Object3D();
-        const hookupWashTarget = new T.Object3D();
         solarLight.position.set(-0.63, 4.25, -1.82);
         engineLight.position.set(-0.6, 2.25, 2.55);
         batteryLight.position.set(1.45, 1.45, -2.33);
-        hookupWashLight.position.set(1.5, 3.1, -3.15);
         solarTarget.position.set(-0.63, 2.87, -1.82);
         engineTarget.position.set(-0.6, 1.05, 2.55);
         batteryTarget.position.set(0.42, 1.41, -2.33);
-        hookupWashTarget.position.set(0.15, 1.35, -2.55);
         solarLight.target = solarTarget;
         engineLight.target = engineTarget;
         batteryLight.target = batteryTarget;
-        hookupWashLight.target = hookupWashTarget;
         model.add(
           solarLight,
           engineLight,
           batteryLight,
-          hookupWashLight,
           solarTarget,
           engineTarget,
-          batteryTarget,
-          hookupWashTarget
+          batteryTarget
         );
 
         const restoreHighlights = () => {
@@ -1785,7 +1778,6 @@ class CampervanEnergyDashboard extends HTMLElement {
           solarLight.intensity = 0;
           engineLight.intensity = 0;
           batteryLight.intensity = 0;
-          hookupWashLight.intensity = 0;
         };
         const highlightNodes = (names, color) => {
           model.traverse((object) => {
@@ -1819,18 +1811,11 @@ class CampervanEnergyDashboard extends HTMLElement {
           if (bounds.isEmpty()) return model.localToWorld(fallback.clone());
           return bounds.getCenter(new T.Vector3());
         };
-        const chargerCenter = model.worldToLocal(nodeCenter(
-          ["EV_CHARGER_POLE_PRO_ROOT"],
-          new T.Vector3(1.5, 1.2, -3.15)
-        ).clone());
-        hookupWashTarget.position.copy(chargerCenter);
-        hookupWashLight.position.copy(chargerCenter).add(new T.Vector3(1.4, 2.1, 1.2));
         const applyHighlight = (name) => {
           if (name === "solar") solarLight.intensity = 8;
           if (name === "engine") engineLight.intensity = 4.2;
           if (name === "hookup") {
             setAssetGroupVisible("EV_CHARGER_AND_CABLE", true);
-            hookupWashLight.intensity = 6;
             highlightNodes(["Hookup"], 0x61b8c8);
           }
           if (name === "battery") batteryLight.intensity = 4.2;
@@ -1844,16 +1829,15 @@ class CampervanEnergyDashboard extends HTMLElement {
         };
         const startRestPulse = () => {
           stopRestPulse();
-          if (activeView !== "overview" || (!powerState.solar && !powerState.engine && !powerState.hookup)) return;
+          if (activeView !== "overview" || (!powerState.solar && !powerState.engine)) return;
           const pulse = (now) => {
-            if (!this.isConnected || activeView !== "overview" || (!powerState.solar && !powerState.engine && !powerState.hookup)) {
+            if (!this.isConnected || activeView !== "overview" || (!powerState.solar && !powerState.engine)) {
               restPulseFrame = 0;
               return;
             }
             const phase = (Math.sin(now / 500) + 1) / 2;
             if (powerState.solar) solarLight.intensity = 6.5 + phase * 3.5;
             if (powerState.engine) engineLight.intensity = 3.2 + phase * 3;
-            if (powerState.hookup) hookupWashLight.intensity = 4.5 + phase * 3;
             renderScene();
             restPulseFrame = requestAnimationFrame(pulse);
           };
@@ -1862,7 +1846,9 @@ class CampervanEnergyDashboard extends HTMLElement {
         const applyRestHighlights = () => {
           setAssetGroupVisible("EV_CHARGER_AND_CABLE", false);
           ["solar", "engine", "hookup", "battery"].forEach((name) => {
-            if (powerState[name]) applyHighlight(name);
+            if (!powerState[name]) return;
+            if (name === "hookup") setAssetGroupVisible("EV_CHARGER_AND_CABLE", true);
+            else applyHighlight(name);
           });
           startRestPulse();
         };
