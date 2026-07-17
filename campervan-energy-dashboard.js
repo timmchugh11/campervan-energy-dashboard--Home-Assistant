@@ -1345,10 +1345,11 @@ class CampervanEnergyDashboard extends HTMLElement {
 
     this.updateBattery("1", e.battery_1);
     this.updateBattery("2", e.battery_2);
+    const bankCharging = bankPower > 20;
     this._modelPowerState = {
-      solar: solarPower > 10,
-      engine: altPower > 20,
-      hookup: hookupPower > 20,
+      solar: bankCharging && solarPower > 10,
+      engine: bankCharging && altPower > 20,
+      hookup: bankCharging && hookupPower > 20,
       battery: bankPower < -20
     };
     this._modelController?.setPowerState?.(this._modelPowerState);
