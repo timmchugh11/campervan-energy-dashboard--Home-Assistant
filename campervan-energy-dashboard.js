@@ -693,6 +693,12 @@ h1 {
 .battery-hero .primary {
   color: var(--ced-charge);
 }
+.battery-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.battery-time {
+  grid-column: 1 / -1;
+}
 .battery-status {
   margin-top: 12px;
   color: var(--ced-sub);
@@ -886,6 +892,13 @@ input[type="range"] {
   }
   .card {
     min-height: 190px;
+    overflow: visible;
+  }
+  .source-card:not(.dual-input-card) {
+    min-height: 250px;
+  }
+  .dual-input-card {
+    min-height: 220px;
   }
   .lower {
     grid-template-rows: auto auto;
@@ -978,6 +991,8 @@ input[type="range"] {
 }
 `;
 
+const DASHBOARD_BUILD = "20260717-layout3";
+
 class CampervanEnergyDashboard extends HTMLElement {
   constructor() {
     super();
@@ -995,6 +1010,7 @@ class CampervanEnergyDashboard extends HTMLElement {
       this.updateViewportHeight();
       if (!window.matchMedia("(max-width: 650px)").matches) this.startThree();
     };
+    this._viewportObserver = null;
   }
 
   static getConfigElement() {
@@ -1020,14 +1036,21 @@ class CampervanEnergyDashboard extends HTMLElement {
   disconnectedCallback() {
     if (this._timeTimer) clearInterval(this._timeTimer);
     window.removeEventListener("resize", this._viewportHandler);
+    window.visualViewport?.removeEventListener("resize", this._viewportHandler);
+    this._viewportObserver?.disconnect();
     document.removeEventListener("visibilitychange", this._visibilityHandler);
   }
 
   updateViewportHeight() {
     const page = this.shadowRoot?.querySelector(".page");
     if (!page) return;
-    const top = Math.max(0, this.getBoundingClientRect().top);
-    page.style.setProperty("--ced-available-height", `${Math.max(560, window.innerHeight - top - 64)}px`);
+    const rect = this.getBoundingClientRect();
+    const viewport = window.visualViewport;
+    const viewportBottom = viewport
+      ? viewport.offsetTop + viewport.height
+      : document.documentElement.clientHeight;
+    const available = Math.max(0, Math.floor(viewportBottom - Math.max(rect.top, 0) - 8));
+    page.style.setProperty("--ced-available-height", `${available}px`);
   }
 
   render() {
@@ -1077,6 +1100,11 @@ class CampervanEnergyDashboard extends HTMLElement {
     this._rendered = true;
     window.removeEventListener("resize", this._viewportHandler);
     window.addEventListener("resize", this._viewportHandler, { passive: true });
+    window.visualViewport?.removeEventListener("resize", this._viewportHandler);
+    window.visualViewport?.addEventListener("resize", this._viewportHandler, { passive: true });
+    this._viewportObserver?.disconnect();
+    this._viewportObserver = new ResizeObserver(this._viewportHandler);
+    this._viewportObserver.observe(this);
     requestAnimationFrame(() => {
       this.updateViewportHeight();
       requestAnimationFrame(() => this.updateViewportHeight());
@@ -1134,10 +1162,10 @@ class CampervanEnergyDashboard extends HTMLElement {
       </div>
       <div class="primary"><span data-bank-soc>--</span><span class="unit">%</span></div>
       <div class="battery-status" data-bank-status>--</div>
-      <div class="secondary">
+      <div class="secondary battery-metrics">
         <div class="metric"><span>Capacity</span><strong data-bank-capacity>--</strong></div>
         <div class="metric"><span>Voltage</span><strong data-bank-voltage>--</strong></div>
-        <div class="metric"><span>Time</span><strong data-bank-time>--</strong></div>
+        <div class="metric battery-time"><span>Time</span><strong data-bank-time>--</strong></div>
       </div>
     </article>`;
   }
@@ -2093,4 +2121,5 @@ if (!customElements.get("campervan-energy-dashboard-editor")) {
 if (!customElements.get("campervan-energy-dashboard")) {
   customElements.define("campervan-energy-dashboard", CampervanEnergyDashboard);
 }
+window.campervanEnergyDashboardBuild = DASHBOARD_BUILD;
 console.info(`%c CAMPERVAN-ENERGY-DASHBOARD %c ${CARD_VERSION} `, "color: white; background: #4caf50; font-weight: 700;", "color: white; background: #1b1b1b; font-weight: 700;");
