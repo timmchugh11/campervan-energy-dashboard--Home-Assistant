@@ -1731,22 +1731,16 @@ class CampervanEnergyDashboard extends HTMLElement {
         const defaultTarget = currentTarget.clone();
         const originalMaterials = new Map();
         const engineLight = new T.SpotLight(0x4b9cd3, 0, 3, Math.PI / 3, 0.6, 2);
-        const batteryLight = new T.SpotLight(0x4caf50, 0, 3, Math.PI / 3, 0.6, 2);
         const engineTarget = new T.Object3D();
-        const batteryTarget = new T.Object3D();
         engineLight.position.set(-0.6, 2.25, 2.25);
-        batteryLight.position.set(0.25, 1.85, -1.75);
         engineTarget.position.set(-0.6, 1.05, 2.25);
-        batteryTarget.position.set(0.25, 0.65, -1.75);
         engineLight.target = engineTarget;
-        batteryLight.target = batteryTarget;
-        model.add(engineLight, batteryLight, engineTarget, batteryTarget);
+        model.add(engineLight, engineTarget);
 
         const restoreHighlights = () => {
           originalMaterials.forEach((material, mesh) => { mesh.material = material; });
           originalMaterials.clear();
           engineLight.intensity = 0;
-          batteryLight.intensity = 0;
         };
         const highlightNodes = (names, color) => {
           model.traverse((object) => {
@@ -1817,9 +1811,9 @@ class CampervanEnergyDashboard extends HTMLElement {
               highlight: () => highlightNodes(["Hookup"], 0x61b8c8)
             },
             battery: {
-              target: model.localToWorld(new T.Vector3(0.25, 0.72, -1.75)),
+              target: nodeCenter(["Small Door"], new T.Vector3(0.42, 1.41, -2.33)),
               offset: new T.Vector3(3.8, 2.0, -3.8),
-              highlight: () => { batteryLight.intensity = 4.2; }
+              highlight: () => highlightNodes(["Small Door"], 0x4caf50)
             }
           };
           const preset = presets[name];
